@@ -92,7 +92,7 @@ def random_quote():
     except NoAvailableImageFoundError:
         image_url = os.path.join(app.static_folder, 'images/no-image.jpg')
 
-    return render_template('./quote-page.j2', quote=char_quote, char_name=full_name, img_url=image_url)
+    return render_template('./index.html', quote=char_quote, char_name=full_name, img_url=image_url)
 
 
 # https://github.com/jeffreylancaster/game-of-thrones/blob/master/data/characters.json
