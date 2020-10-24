@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Game of Quotes</title>
+    <link
+      href="{{url_for('static',filename='style.css')}}"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+
+  <body>
+    <header>
+      <h1>game of quotes</h1>
+    </header>
+    <main>
+      <div id="form-container">
+        <form action="/" method="GET">
+          <div class="search-box-container">
+            <div id="search-box-title"  class="instruction-title">
+              Type a character / house name and get your quote!
+            </div>
+            <div class="search-box">
+              <!-- <label for="search">Character / house name:</label> -->
+              <input
+                type="text"
+                id="search"
+                name="search"
+                autofocus
+                required
+                placeholder="Type in a character / house name"
+                autocomplete="off"
+                pattern="^[A-Za-z ]+$"
+                value="{{ search_input }}"
+                spellcheck="false"
+                title="English alphabets and spaces only."
+              />
+
+              <button class="search-btn" type="submit">
+                <i class="search-icon"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="random-btn-container">
+        <div id="random-btn-title" class="instruction-title">Extremely brave? hit the button!</div>
+        <button id="random-btn" type="button" onclick="location.href='/random'">
+          Random
+          <i class="solid-dice-icon"></i>
+        </button>
+      </div>
+    </main>
+    {% if quote %}
+    <article class="quote-box">
+      {% if img_url %}
+      <img src="{{ img_url }}" alt="{{ char_name }}" />
+      {% endif %}
+      <div class="quote-and-name">
+        <blockquote class="quote">{{quote}}</blockquote>
+        <div class="author-name">{{char_name}}</div>
+      </div>
+    </article>
+    {% endif %}
+    <footer>
+      Created using the <a href="https://gameofthronesquotes.xyz/">Game of Thrones quotes API</a>
+    </footer>
+  </body>
+</html>
