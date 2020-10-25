@@ -28,7 +28,7 @@ app = Flask(__name__)
 def index():
     search_input = request.args.get('search')
     if not search_input:
-        return render_template('index.html')
+        return render_template('index.j2')
     try:
         char_quote, full_name = get_quote_by_char_or_house(search_input)
     except NonExistentCharacterError:
