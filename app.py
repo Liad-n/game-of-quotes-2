@@ -1,8 +1,8 @@
 import os
 import random
-import requests
+
 from flask import Flask, json, render_template, request
-from jinja2 import Template
+import requests
 
 
 class NonExistentCharacterError(Exception):
@@ -40,7 +40,7 @@ def index():
     except NoAvailableImageFoundError:
         image_url = os.path.join(app.static_folder, 'images/no-image.jpg')
 
-    return render_template('./index.html', search_input=search_input, quote=char_quote, char_name=full_name, img_url=image_url)
+    return render_template('./index.j2', search_input=search_input, quote=char_quote, char_name=full_name, img_url=image_url)
 
 
 @app.route('/<char_slug>')
@@ -56,7 +56,7 @@ def quote_page(char_slug):
     except NoAvailableImageFoundError:
         image_url = os.path.join(app.static_folder, 'images/no-image.jpg')
 
-    return render_template('./index.html', search_input=full_name, quote=char_quote, char_name=full_name, img_url=image_url)
+    return render_template('./index.j2', search_input=full_name, quote=char_quote, char_name=full_name, img_url=image_url)
 
 
 @app.route('/random')
@@ -72,7 +72,7 @@ def random_quote():
     except NoAvailableImageFoundError:
         image_url = os.path.join(app.static_folder, 'images/no-image.jpg')
 
-    return render_template('./index.html', quote=char_quote, char_name=full_name, img_url=image_url)
+    return render_template('./index.j2', quote=char_quote, char_name=full_name, img_url=image_url)
 
 
 # https://github.com/jeffreylancaster/game-of-thrones/blob/master/data/characters.json
@@ -119,7 +119,7 @@ def get_quote_by_slug(char_name):
         return (quote, full_name)
     else:
         raise NonExistentCharacterError(
-            f'{char_name} is not a character in the api')
+            '{char_name} is not a character in the api')
 
 
 def get_houses_and_members():
