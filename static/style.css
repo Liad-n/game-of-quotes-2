@@ -75,19 +75,31 @@
       url("./fonts/titillium-web-v9-latin/titillium-web-v9-latin-600.svg#TitilliumWeb")
       format("svg"); /* Legacy iOS */
 }
+body > *:first-child {
+  margin-top: 0;
+}
 html,
 body {
   height: 100%;
-  /* width:100%; */
-  /* display: flex; */
+  margin-top:0;
+  margin-bottom:0;
 }
 body {
+  margin:0 25px 0 25px;
   font-family: "Titillium Web", sans-serif;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   background-color: #121212;
   color: #fcfef0;
   align-items: center;
+  display: grid;
+  gap: 20px;
+  grid-template-areas:
+    "header header"
+    "main main"
+    "quote-box quote-box"
+    "footer footer";
+    grid-template-rows: 10vmax 37vmax 36vmax auto;
 }
 h1 {
   font-family: "Game of Thrones";
@@ -122,18 +134,7 @@ textarea {
   padding: 0;
   margin: 0;
 }
-body {
-  display: grid;
-  gap: 10px;
-  grid-template-areas:
-    "header header"
-    "main main"
-    "quote-box quote-box"
-    "footer footer";
-  grid-template-rows: min-content 1fr auto;
-  /* margin:auto; */
-  /* grid-auto-rows: 1fr 2fr 1fr; */
-}
+
 main {
   grid-area: main;
   display: flex;
@@ -143,19 +144,30 @@ main {
   grid-area: quote-box;
   position: relative;
   background-color: #303030;
-  /* display: flow-root; */
+  /* calc(100% - 13vmin); */
+  max-width: 94%;
+  border-radius: 4px;
+  bottom: 9vmax;
 }
 .quote-box > .quote-and-name {
   position: relative;
-  left: 30px;
+  left: 6vmin;
   padding: 10px;
   max-width: calc(100% - 40px);
+}
+.quote-and-name::before {
+  content: "\201C";
+  font-family: Arial;
+  font-size: 60px;
+  margin-left: -8%;
+  margin-top: -4%;
+  position: absolute;
 }
 .quote-box .quote {
   font-size: 1.2em;
   font-weight: 300;
-  margin-bottom: 0;
-  margin-left: 0;
+  margin: 0;
+  max-width: 88%;
 }
 .quote-box .author-name {
   font-weight: 600;
@@ -166,12 +178,12 @@ main {
   height: 0;
 }
 .quote-box img {
-  position: absolute;
+  position: relative;
   max-width: 100px;
-  /* max-height: 100px; */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
-  top: -50px;
-  left: 50%;
+  float: right;
+  transform: translate(6vmin, 22vmin);
 }
 form {
   display: flex;
@@ -202,11 +214,13 @@ header {
 }
 .search-box {
   height: 45px;
-  /* width: 90%; */
   position: relative;
   background-color: #1f1b24;
-  border: 2px solid #c38d5f;
+  border: 1px solid #c38d5f;
   border-radius: 50px;
+}
+.search-box:focus-within {
+  border: 2px solid #c38d5f;
 }
 .search-btn {
   width: 30px;
@@ -235,7 +249,8 @@ header {
   border-radius: 8px;
   border: none;
   background: #c38d5f;
-  font-size: 1.5em;
+  font-size: 1.4em;
+  font-weight: 600;
   cursor: pointer;
 }
 .search-icon {
@@ -249,13 +264,16 @@ header {
   width: 24px;
   height: 24px;
 }
-footer{
+footer {
   grid-area: footer;
   font-size: 0.7em;
+  text-align: center;
+  opacity: 0.6;
 }
-footer a{
-  color:#a77b55;
+footer a {
+  color: #a77b55;
 }
+
 @media screen and (min-width: 1200px) {
   body {
     grid-template-areas:
@@ -264,6 +282,8 @@ footer a{
       "footer footer";
     font-size: 20px;
     justify-items: center;
+    grid-template-rows: 10vmin 60vmin 30vmin;
+    grid-template-columns: 1fr 2fr;
   }
   main {
     padding: 10px;
@@ -283,28 +303,21 @@ footer a{
     box-sizing: border-box;
     border-radius: 4px;
     max-width: 45%;
+    bottom: unset;
   }
   .quote-box img {
     position: relative;
     max-width: 200px;
     border-radius: 4px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
     left: unset;
     top: unset;
     transform: translate(7vmax, 11vmin);
     float: right;
   }
-  .quote-and-name::before {
-    content: "\201C";
-    font-family: Arial;
-    font-size: 60px;
-    margin-left: -11%;
-    margin-top: -4%;
-    position: absolute;
-  }
 
   .quote-box > .quote-and-name {
     max-width: 60%;
+    left: 1vmax;
   }
   .search-box {
     max-width: 30vmax;

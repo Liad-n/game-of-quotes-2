@@ -1,8 +1,7 @@
-# import json
 import os
 import random
 import requests
-from flask import Flask, render_template, request, json
+from flask import Flask, json, render_template, request
 from jinja2 import Template
 
 
@@ -23,25 +22,6 @@ class NoAvailableImageFoundError(Exception):
 
 
 app = Flask(__name__)
-
-
-# @app.route('/')
-# def index():
-#     search_input = request.args.get('search')
-#     if not search_input:
-#         return render_template('index.html')
-#     try:
-#         char_quote, full_name = get_quote_by_char_or_house(search_input)
-#     except NonExistentCharacterError:
-#         char_quote, full_name = 'Not found', ''
-
-#     pictures_json = get_pictures_json()
-#     try:
-#         image_url = get_char_image_url(pictures_json, full_name)
-#     except NoAvailableImageFoundError:
-#         image_url = os.path.join(app.static_folder, 'images/no-image.jpg')
-
-#     return render_template('./index.html', quote=char_quote, char_name=full_name, img_url=image_url)
 
 
 @app.route('/')
@@ -138,7 +118,8 @@ def get_quote_by_slug(char_name):
         full_name = json_response['character']['name']
         return (quote, full_name)
     else:
-        raise NonExistentCharacterError(f'{char_name} is not a character in the api')
+        raise NonExistentCharacterError(
+            f'{char_name} is not a character in the api')
 
 
 def get_houses_and_members():
@@ -146,8 +127,9 @@ def get_houses_and_members():
 
     if (response.status_code == 200):
         json_houses = response.json()
-        houses_and_members = {house['slug']: [member['slug'] for member in house['members']] for house in json_houses }
-        
+        houses_and_members = {house['slug']: [member['slug']
+                                              for member in house['members']] for house in json_houses}
+
         return houses_and_members
 
 
@@ -172,7 +154,7 @@ def get_quote_by_char_or_house(received_text):
         char_name = get_random_character_by_house_name(lower_text)
     else:
         char_name = get_slug_by_name(lower_text)
-        
+
     quote = get_quote_by_slug(char_name)
     return quote
 
@@ -208,7 +190,7 @@ def get_char_image_url(pictures_json, full_char_name):
             return json_char.get('characterImageFull', '')
         elif char_first_name == json_char_first_name:
             house_name = json_char.get("houseName", "")
-            
+
             if isinstance(house_name, str) and f'{char_first_name} {char_last_name}'.lower() == f"{char_first_name} {json_char.get('houseName', '').lower()}":
                 return json_char.get('characterImageFull', '')
     raise NoAvailableImageFoundError(f"no image matches {full_char_name}")
