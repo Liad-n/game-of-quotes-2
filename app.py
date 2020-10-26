@@ -1,7 +1,7 @@
 import os
 import random
 
-from flask import Flask, json, render_template, request
+from flask import Flask, json, render_template, request, url_for
 import requests
 
 
@@ -38,7 +38,7 @@ def index():
     try:
         image_url = get_char_image_url(pictures_json, full_name)
     except NoAvailableImageFoundError:
-        image_url = os.path.join(app.static_folder, 'images/no-image.jpg')
+        image_url = url_for('static', filename='images/no-image.jpg')
 
     return render_template('./index.j2', search_input=search_input, quote=char_quote, char_name=full_name, img_url=image_url)
 
@@ -54,7 +54,7 @@ def quote_page(char_slug):
     try:
         image_url = get_char_image_url(pictures_json, full_name)
     except NoAvailableImageFoundError:
-        image_url = os.path.join(app.static_folder, 'images/no-image.jpg')
+        image_url = url_for('static', filename='images/no-image.jpg')
 
     return render_template('./index.j2', search_input=full_name, quote=char_quote, char_name=full_name, img_url=image_url)
 
@@ -70,7 +70,7 @@ def random_quote():
     try:
         image_url = get_char_image_url(pictures_json, full_name)
     except NoAvailableImageFoundError:
-        image_url = os.path.join(app.static_folder, 'images/no-image.jpg')
+        image_url = url_for('static', filename='images/no-image.jpg')
 
     return render_template('./index.j2', quote=char_quote, char_name=full_name, img_url=image_url)
 
