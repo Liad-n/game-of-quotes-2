@@ -45,15 +45,16 @@
                 </button>
             </div>
         </main>
+            {% if quote %} 
         <div class="quote-box">
-            {% if quote %} {% if img_url %}
+        {% if img_url %}
             <img src="{{ img_url }}" alt="{{ char_name }}" /> {% endif %}
             <div class="quote-and-name">
                 <blockquote class="quote">{{quote}}</blockquote>
                 <div class="author-name">{{char_name}}</div>
             </div>
-            {% endif %}
         </div>
+            {% endif %}
         <footer>
             Created using the <a href="https://gameofthronesquotes.xyz/">Game of Thrones quotes API</a>
         </footer>
