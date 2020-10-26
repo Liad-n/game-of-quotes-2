@@ -133,7 +133,7 @@ main {
     display: flex;
     flex-flow: column;
     text-align: center;
-    gap: 3rem;
+    gap: 3vmax;
 }
 
 .quote-box {
@@ -318,7 +318,7 @@ footer a {
     /* grid-template-rows: 10vmin 60vmin 30vmin;
   grid-template-columns: 1fr 2fr; */
     margin-top: 5em;
-    gap: 3rem;
+    gap: 3vmax;
     /* text-align: center; */
 }
 
