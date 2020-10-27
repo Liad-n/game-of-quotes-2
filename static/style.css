@@ -77,11 +77,9 @@ body {
     font-weight: 400;
     background-color: #121212;
     color: #fcfef0;
-    /* align-items: center;
-    display: grid;
-    gap: 20px;
-    grid-template-areas: "header header" "main main" "quote-box quote-box" "footer footer";
-    grid-template-rows: 10vmax 37vmax 36vmax auto; */
+    display: flex;
+    flex-direction: column;
+    gap: 6vh;
 }
 
 h1 {
@@ -134,7 +132,7 @@ main {
     display: flex;
     flex-flow: column;
     text-align: center;
-    gap: 3vmax;
+    gap: 6vh;
 }
 
 .quote-box {
@@ -198,7 +196,8 @@ main {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
     border-radius: 4px;
     float: right;
-    transform: translate(7vmin, 17vmin);
+    /* transform: translate(7vmin, 17vmin); */
+    transform: translate(9vw, 8vh);
 }
 
 form {
@@ -297,13 +296,14 @@ header {
 
 footer {
     /* grid-area: footer; */
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    /* position: absolute; */
+    /* bottom: 0;
+    left: 0; */
     width: 100%;
     font-size: 1em;
     text-align: center;
     opacity: 0.6;
+    margin-top: auto;
 }
 
 footer a {
@@ -312,20 +312,29 @@ footer a {
 
 #page-content {
     /* grid-template-areas: "header header" "main quote-box" "footer footer"; */
-    display: flex;
-    flex-flow: column;
+    /* display: flex;
+    flex-flow: column; */
     /* font-size: 20px; */
-    justify-items: center;
+    /* justify-items: center; */
     /* grid-template-rows: 10vmin 60vmin 30vmin;
   grid-template-columns: 1fr 2fr; */
-    margin-top: 5em;
-    gap: 3vmax;
+    /* margin-top: 5em; */
+    /* gap: 3vmax; */
     /* text-align: center; */
 }
-
+body > * :not(:last-child){
+    flex: 1 0 auto;
+}
 @media screen and (min-width: 1200px) {
-    #page-content {
+    body{
+        font-size:20px;
+    }
+    
+    /* #page-content {
         font-size: 20px;
+    } */
+    footer{
+        font-size:0.8em;
     }
     /* body {
     grid-template-areas:
@@ -343,7 +352,7 @@ footer a {
     main {
         padding: 10px;
         border-radius: 10px;
-        gap: 4rem;
+        gap: 6vh;
         text-align: center;
     }
     #random-btn:hover {
@@ -369,7 +378,7 @@ footer a {
         border-radius: 4px;
         left: unset;
         top: unset;
-        transform: translate(5vmax, 7vmin);
+        transform: translate(5vw, 7vh);
         float: right;
     }
     .quote::before {
