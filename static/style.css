@@ -295,6 +295,7 @@ header {
   padding: 3px 10px 6px 10px;
   border-radius: 8px;
   border: none;
+  outline:none;
   background: #c38d5f;
   font-size: 1.4em;
   font-weight: 600;
