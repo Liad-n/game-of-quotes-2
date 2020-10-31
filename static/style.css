@@ -301,6 +301,15 @@ header {
   cursor: pointer;
   color: #121212;
 }
+#random-btn:active,
+#random-btn:hover{
+  background: #d1a784;
+}
+.search-btn:hover,
+.search-btn:active {
+  background: #d1a784;
+}
+/* fa8723 */
 
 .search-icon {
   content: url(./icons/search-icon.svg);
@@ -346,14 +355,6 @@ body > * :not(:last-child) {
     border-radius: 10px;
     gap: 6vh;
     text-align: center;
-  }
-  #random-btn:hover,
-  #random-btn:active {
-    background: #fa8723;
-  }
-  .search-btn:hover,
-  .search-btn:active {
-    background: #fa8723;
   }
   .quote-box {
     box-sizing: border-box;
