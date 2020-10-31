@@ -134,7 +134,6 @@ def get_houses_and_members():
 
 
 def get_random_character_by_house_name(house_name):
-    # character_name = ''
     response = requests.get(f'{base_api}/house/{house_name}')
 
     if (response.status_code == 200):
@@ -149,7 +148,7 @@ def get_random_character_by_house_name(house_name):
 def get_quote_by_char_or_house(received_text):
     lower_text = received_text.lower()
     houses_and_members = get_houses_and_members()
-    is_house = received_text in houses_and_members
+    is_house = lower_text in houses_and_members
     if is_house:
         char_name = get_random_character_by_house_name(lower_text)
     else:

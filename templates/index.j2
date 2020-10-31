@@ -20,68 +20,59 @@
     <header>
       <h1 id="title">Game of Quotes</h1>
     </header>
-    <!-- <div id="page-content">-->
-      <main>
-        <!-- <div id="search-box-title" class="instruction-title">
-                Type a character / house name and get your quote!
-                They did say many other things, though! 
-            </div> -->
-        <div id="search-box-title" class="instruction-title">
-          Winter is coming they said...<br />
-          Better get yourself a quote!
-        </div>
-        <div id="form-container">
-          <form action="/" method="GET">
-            <div class="search-box-container">
-              <div class="search-box">
-                <!-- <label for="search">Character / house name:</label> -->
-                <input
-                  type="text"
-                  id="search"
-                  name="search"
-                  aria-label="Search character or house"
-                  autofocus
-                  required
-                  placeholder="Type in a character / house name"
-                  autocomplete="off"
-                  pattern="^[A-Za-z ]+$"
-                  value="{{ search_input }}"
-                  spellcheck="false"
-                  title="English alphabets and spaces only."
-                />
-
-                <button class="search-btn" type="submit">
-                  <i class="search-icon"></i>
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div id="random-btn-title" class="instruction-title">
-          Extremely brave? hit the button!
-        </div>
-        <div class="random-btn-container">
-          <button
-            id="random-btn"
-            type="button"
-            onclick="location.href='/random'"
-          >
-            Random
-            <i class="solid-dice-icon"></i>
-          </button>
-        </div>
-      </main>
-      {% if quote %}
-      <div class="quote-box">
-        {% if img_url %}
-        <img src="{{ img_url }}" alt="{{ char_name }}" /> {% endif %}
-        <div class="quote-and-name">
-          <blockquote class="quote">{{quote}}</blockquote>
-          <div class="author-name">{{char_name}}</div>
-        </div>
+    <main>
+      <div id="search-box-title" class="instruction-title">
+        Winter is coming they said...<br />
+        Better get yourself a quote!
       </div>
+      <div id="form-container">
+        <form action="/" method="GET">
+          <div class="search-box-container">
+            <div class="search-box">
+              <!-- <label for="search">Character / house name:</label> -->
+              <input
+                type="text"
+                id="search"
+                name="search"
+                aria-label="Search character or house"
+                autofocus
+                required
+                placeholder="Type in a character / house name"
+                autocomplete="off"
+                pattern="^[A-Za-z ]+$"
+                value="{{ search_input }}"
+                spellcheck="false"
+                title="English alphabets and spaces only."
+              />
+
+              <button class="search-btn" type="submit">
+                <i class="search-icon"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div id="random-btn-title" class="instruction-title">
+        Extremely brave? hit the button!
+      </div>
+      <div class="random-btn-container">
+        <button id="random-btn" type="button" onclick="location.href='/random'">
+          Random
+          <i class="solid-dice-icon"></i>
+        </button>
+      </div>
+    </main>
+    {% if quote %}
+    <div class="quote-box">
+      {% if img_url %}
+      <img src="{{ img_url }}" alt="{{ char_name }}" />
       {% endif %}
-    <!-- </div>-->
+      <div class="quote-and-name">
+        <blockquote class="quote">{{quote}}</blockquote>
+        <div class="author-name">{{char_name}}</div>
+      </div>
+    </div>
+    {% endif %}
     <footer>
       Created using the
       <a href="https://gameofthronesquotes.xyz/">Game of Thrones quotes API</a>
