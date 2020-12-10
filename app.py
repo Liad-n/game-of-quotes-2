@@ -103,27 +103,7 @@ def admin_manage_users():
         return render_template('manage-users.j2', is_admin=1, users=Users.query.all())
     else:
         return abort(403, 'Not allowed')
-    # if request.method == 'GET':
-    #     return render_template('manage-users.j2')
-    # username = request.form['username']
-    # if username is None:
-    #     return abort(400, 'You must enter a username')
 
-    # users = Table('users', metadata, autoload=True, autoload_with=engine)
-    # user = select([users]).where(Username.username == username).get()
-
-    # user = Users.query.filter_by(username=username).first()
-    # if not user:
-    #     return abort(404, 'User does not exist')
-    
-    # password = request.form['password'].encode('utf-8')
-    # real_password = str(user.password).encode('utf-8')
-
-    # if not bcrypt.checkpw(password, real_password):
-    #     return abort(403, 'Username and password do not match')
-    # session['username'] = user.username
-    # session['full_name'] = user.full_name
-    # return redirect(url_for('register'))
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -135,13 +115,14 @@ def user_profile():
 
 
 def get_char_or_house(query):
-    response = Houses.query.filter(Houses.name.like(f'%{query}%')).first()
+    lower_query = query.lower()
+    response = Houses.query.filter(Houses.name.like(f'%{lower_query}%')).first()
     if response:
         return response
-    response = Characters.query.filter(Characters.name.like(f'%{query}%')).first()
+    response = Characters.query.filter(Characters.name.like(f'%{lower_query}%')).first()
     if response:
         return response
-    response = Quotes.query.filter(Quotes.quote_caption.like(f'%{query}%')).first()
+    response = Quotes.query.filter(Quotes.quote_caption.like(f'%{lower_query}%')).first()
     if response:
         return response
 
