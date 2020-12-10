@@ -26,12 +26,12 @@ class Characters(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
     house_id = db.Column(db.Integer, db.ForeignKey('houses.id'))
-    image_url_full = db.Column(db.String(30))
-    image_url_thumb = db.Column(db.String(30))
+    image_url_full = db.Column(db.Text)
+    image_url_thumb = db.Column(db.Text)
     quotes = db.relationship('Quotes', backref='quotes')
 
 
 class Houses(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=True)
+    name = db.Column(db.Text, unique=True)
     members = db.relationship('Characters', backref='members')
