@@ -1,9 +1,12 @@
+import json
+import os
+import requests
+
+from sqlalchemy.inspection import inspect
 from app import db
 from shared import app, db
-from app import *
-from models import *
-import json
-import requests
+from models import Users, FavoriteQuotes, Quotes, Characters, Houses
+
 
 def get_houses():
 	response = requests.get(f'{base_api}/houses')
@@ -28,11 +31,11 @@ def get_pictures_json():
 
 def get_characters():
 	response = requests.get(f'{base_api}/characters')
-	print(response)
 
 	if (response.status_code == 200) and response.content:
 		json_response = response.json()
 		return json_response
+
 
 def get_chars_with_pics(chars, pictures_json):
 	chars_with_pics = []
@@ -61,22 +64,22 @@ def get_chars_with_pics_and_house_ids(chars_with_pics, house_lut):
 			char['house_id'] = house_lut[char['house']]
 	return chars_with_pics
 
+
 def get_chars_for_table(chars, columns):
 	chars_for_table = []
 	for char in chars:
 		new_char = {}
 		for k,v in char.items():
-			# new_char = {for }
-			# print(k)
 			if k in columns:
 				new_char[k] = v
 		chars_for_table.append(new_char)
 	return chars_for_table
 
-from sqlalchemy.inspection import inspect
+
 def get_all_table_columns(model):
 	table = inspect(model)
 	return [column.name for column in table.c]
+
 
 def occupy_houses():
 	houses = get_houses()
@@ -85,9 +88,11 @@ def occupy_houses():
 		db.session.add(new_house)
 	db.session.commit()
 
+
 def get_chars_from_table():
 	chars = Characters.query.all()
 	return chars
+
 
 def occupy_quotes(chars_raw):
 	for char in chars_raw:
@@ -96,6 +101,7 @@ def occupy_quotes(chars_raw):
 			new_quote = Quotes(quote_caption=quote, author_id=char_id)
 			db.session.add(new_quote)
 	db.session.commit()
+
 
 base_api = "https://game-of-thrones-quotes.herokuapp.com/v1"
 
@@ -106,12 +112,10 @@ occupy_houses()
 house_lut = get_house_ids()
 chars = get_characters()
 
-
 pictures_json = get_pictures_json()
 chars_with_pics = get_chars_with_pics(chars, pictures_json)
 
 chars_raw = get_chars_with_pics_and_house_ids(chars_with_pics, house_lut)
-
 
 chars_cols = get_all_table_columns(Characters)
 chars_for_table = get_chars_for_table(chars_raw, chars_cols)
