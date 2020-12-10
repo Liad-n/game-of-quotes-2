@@ -1,10 +1,10 @@
 import random
 from flask import request, render_template, redirect, abort, url_for, session
-from flask_sqlalchemy import SQLAlchemy
 import bcrypt
 from shared import app, db
 from models import Users, FavoriteQuotes, Quotes, Characters, Houses
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func
 
 
 @app.route('/')
@@ -116,13 +116,13 @@ def user_profile():
 
 def get_char_or_house(query):
     lower_query = query.lower()
-    response = Houses.query.filter(Houses.name.like(f'%{lower_query}%')).first()
+    response = Houses.query.filter(func.lower(Houses.name).like(f'%{lower_query}%')).first()
     if response:
         return response
-    response = Characters.query.filter(Characters.name.like(f'%{lower_query}%')).first()
+    response = Characters.query.filter(func.lower(Characters.name).like(f'%{lower_query}%')).first()
     if response:
         return response
-    response = Quotes.query.filter(Quotes.quote_caption.like(f'%{lower_query}%')).first()
+    response = Quotes.query.filter(func.lower(Quotes.quote_caption).like(f'%{lower_query}%')).first()
     if response:
         return response
 
