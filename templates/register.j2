@@ -1,0 +1,92 @@
+
+      {% extends "layout.j2" %}
+      {% block content %}
+      <div id="form-container">
+        <form action="/register" method="POST">
+         <div class="text-box">
+              <input
+                type="text"
+                id="full_name"
+                name="full_name"
+                aria-label="Full name field"
+                autofocus
+                required
+                placeholder="Type in your full name: "
+                autocomplete="off"
+                pattern="^[A-Za-z ]+$"
+                spellcheck="false"
+                title="English alphabets and spaces only."
+              />
+
+              {# <button class="search-btn" type="submit">
+                <i class="search-icon"></i>
+              </button> #}
+            </div>
+          <div class="username">
+            <div class="text-box">
+              <input
+                type="text"
+                id="username"
+                name="username"
+                aria-label="Username field"
+                autofocus
+                required
+                placeholder="Type in your username: "
+                autocomplete="off"
+                pattern="^[A-Za-z0-9]+$"
+                spellcheck="false"
+                title="English alphabets and spaces only."
+              />
+
+              {# <button class="search-btn" type="submit">
+                <i class="search-icon"></i>
+              </button> #}
+            </div>
+          </div>
+          <div class="password">
+            <div class="text-box">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                aria-label="Password field"
+                autofocus
+                required
+                placeholder="Type in your password: "
+                autocomplete="off"
+                pattern="^[A-Za-z0-9!@#$%^&*]+$"
+                spellcheck="false"
+                title="English alphabets and numbers only."
+              />
+
+              {# <button class="search-btn" type="submit">
+                <i class="search-icon"></i>
+              </button> #}
+            </div>
+          </div>
+          <div class="random-btn-container">
+        <button id="random-btn" type="submit">
+          Register!
+          {# <i class="solid-dice-icon"></i> #}
+        </button>
+      </div>
+        </form>
+      </div>
+      {# <div id="random-btn-title" class="instruction-title">
+        Extremely brave? hit the button!
+      </div> #}
+      
+    </main>
+    {% if quote %}
+    <div class="quote-box">
+      {% if img_url %}
+      <img src="{{ img_url }}" alt="{{ char_name }}" />
+      {% endif %}
+      <div class="quote-and-name">
+        <blockquote class="quote">{{quote}}</blockquote>
+        <div class="author-name">{{char_name}}</div>
+      </div>
+    </div>
+    {% endif %}
+    {% endblock content %}
+

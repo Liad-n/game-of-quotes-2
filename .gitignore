@@ -1,2 +1,12 @@
 /heroku
 /__pycache__
+config.py
+*.db
+*.ipynb
+occupy_quotes.py
+app2.py
+bcrypt-test.py
+test.py
+*.zip
+*.pyc
+.vscode

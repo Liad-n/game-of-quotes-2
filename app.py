@@ -1,27 +1,10 @@
-import os
 import random
-
-from flask import Flask, json, render_template, request, url_for
-import requests
-
-
-class NonExistentCharacterError(Exception):
-    pass
-
-
-class NonExistentHouseError(Exception):
-    pass
-
-
-class ApiUnavailableError(Exception):
-    pass
-
-
-class NoAvailableImageFoundError(Exception):
-    pass
-
-
-app = Flask(__name__)
+from flask import request, render_template, redirect, abort, url_for, session
+from flask_sqlalchemy import SQLAlchemy
+import bcrypt
+from shared import app, db
+from models import Users, FavoriteQuotes, Quotes, Characters, Houses
+from sqlalchemy.exc import IntegrityError
 
 
 @app.route('/')
@@ -29,171 +12,144 @@ def index():
     search_input = request.args.get('search')
     if not search_input:
         return render_template('index.j2')
-    try:
-        char_quote, full_name = get_quote_by_char_or_house(search_input)
-    except NonExistentCharacterError:
-        char_quote, full_name = 'Not found', ''
+    
+    response = get_char_or_house(search_input)
+    if type(response) == Houses:
+        char = random.choice(response.members)
+        quote = random.choice(char.quotes).quote_caption
+        char_name = char.name
+        img_url = char.image_url_full
+    elif type(response) == Characters:
+        quote = random.choice(response.quotes).quote_caption
+        char_name = response.name
+        img_url = response.image_url_full
+    elif type(response) == Quotes:
+        quote = response.quote_caption
+        char = Characters.query.filter_by(id=response.author_id).first()
+        char_name = char.name
+        img_url = char.image_url_full
+    else:
+        #return abort(404, 'Sadly, we found nothing to match your expectation. \nFor you, the night is dark and full of terrors.')
+        char_name = 'Not Found'
+        quote = 'Sadly, we found nothing to match your expectation. For you, the night is dark and full of terrors.'
+        img_url = url_for('static', filename='images/no-image.jpg')
 
-    pictures_json = get_pictures_json()
-    try:
-        image_url = get_char_image_url(pictures_json, full_name)
-    except NoAvailableImageFoundError:
-        image_url = url_for('static', filename='images/no-image.jpg')
-
-    return render_template('./index.j2', search_input=search_input, quote=char_quote, char_name=full_name, img_url=image_url)
-
-
-@app.route('/<char_slug>')
-def quote_page(char_slug):
-    try:
-        char_quote, full_name = get_quote_by_slug(char_slug)
-    except NonExistentCharacterError:
-        char_quote, full_name = 'Not found', ''
-
-    pictures_json = get_pictures_json()
-    try:
-        image_url = get_char_image_url(pictures_json, full_name)
-    except NoAvailableImageFoundError:
-        image_url = url_for('static', filename='images/no-image.jpg')
-
-    return render_template('./index.j2', search_input=full_name, quote=char_quote, char_name=full_name, img_url=image_url)
+    return render_template('./index.j2', search_input=search_input, quote=quote, char_name=char_name, img_url=img_url)
 
 
 @app.route('/random')
 def random_quote():
+    quote_obj = random.choice(Quotes.query.all())
+    quote = quote_obj.quote_caption
+    char = Characters.query.filter_by(id=quote_obj.author_id).first()
+    char_name = char.name
+    img_url = char.image_url_full
+
+    return render_template('./index.j2', quote=quote, char_name=char_name, img_url=img_url)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.j2')
+    salt = bcrypt.gensalt(prefix=b"2b", rounds=5)
+    raw_password = request.form['password'].encode('utf-8')
+    hashed_password = bcrypt.hashpw(raw_password, salt)
+    fields = {
+        **request.form,
+        'password': hashed_password.decode('utf-8'),
+        }
+    user = Users(**fields)
     try:
-        char_quote, full_name = get_random_quote()
-    except NonExistentCharacterError:
-        char_quote, full_name = 'Not found', ''
-
-    pictures_json = get_pictures_json()
-    try:
-        image_url = get_char_image_url(pictures_json, full_name)
-    except NoAvailableImageFoundError:
-        image_url = url_for('static', filename='images/no-image.jpg')
-
-    return render_template('./index.j2', quote=char_quote, char_name=full_name, img_url=image_url)
+        db.session.add(user)
+        db.session.commit()
+    except IntegrityError:
+        return f"Username {fields['username']} already exists! Try another username."
+    return 'Success!'
+    # return render_template('./register.j2')
 
 
-# https://github.com/jeffreylancaster/game-of-thrones/blob/master/data/characters.json
-base_api = "https://game-of-thrones-quotes.herokuapp.com/v1"
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.j2')
+    
+    username = request.form['username']
+    if username is None:
+        return abort(400, 'You must enter a username')
+
+    # users = Table('users', metadata, autoload=True, autoload_with=engine)
+    # user = select([users]).where(Username.username == username).get()
+
+    user = Users.query.filter_by(username=username).first()
+    if not user:
+        return abort(404, 'User does not exist')
+    
+    password = request.form['password'].encode('utf-8')
+    real_password = str(user.password).encode('utf-8')
+
+    if not bcrypt.checkpw(password, real_password):
+        return abort(403, 'Username and password do not match')
+    session['username'] = user.username
+    session['full_name'] = user.full_name
+
+    return redirect(url_for('user_profile'))
+    # return redirect(url_for('admin_manage_users'))
 
 
-def get_characters():
-    response = requests.get(f'{base_api}/characters')
-
-    if (response.status_code == 200) and response.content:
-        json_response = response.json()
-        return {char['name'].lower(): char['slug'] for char in json_response}
-    raise ApiUnavailableError('could not get a valid response from the api')
-
-
-def get_slug_by_name(char_name):
-    chars = get_characters()
-
-    for full_name, slug in chars.items():
-        if char_name in full_name:
-            return slug
-    return None
-
-
-def get_random_quote():
-    response = requests.get(f'{base_api}/random')
-
-    if (response.status_code == 200) and response.content:
-        json_response = response.json()
-        quote = json_response['sentence']
-        full_name = json_response['character']['name']
-        return (quote, full_name)
+@app.route('/admin/manage-users', methods=['GET', 'POST'])
+def admin_manage_users():
+    if session and Users.query.filter_by(username=session['username']).first().access_level == 1:
+        return render_template('manage-users.j2', is_admin=1, users=Users.query.all())
     else:
-        raise NonExistentCharacterError(f'is not a character in the api')
+        return abort(403, 'Not allowed')
+    # if request.method == 'GET':
+    #     return render_template('manage-users.j2')
+    # username = request.form['username']
+    # if username is None:
+    #     return abort(400, 'You must enter a username')
+
+    # users = Table('users', metadata, autoload=True, autoload_with=engine)
+    # user = select([users]).where(Username.username == username).get()
+
+    # user = Users.query.filter_by(username=username).first()
+    # if not user:
+    #     return abort(404, 'User does not exist')
+    
+    # password = request.form['password'].encode('utf-8')
+    # real_password = str(user.password).encode('utf-8')
+
+    # if not bcrypt.checkpw(password, real_password):
+    #     return abort(403, 'Username and password do not match')
+    # session['username'] = user.username
+    # session['full_name'] = user.full_name
+    # return redirect(url_for('register'))
 
 
-def get_quote_by_slug(char_name):
-    response = requests.get(f'{base_api}/author/{char_name}/1')
-
-    if (response.status_code == 200) and response.content:
-        json_response = response.json()
-        quote = json_response['sentence']
-        full_name = json_response['character']['name']
-        return (quote, full_name)
+@app.route('/profile', methods=['GET', 'POST'])
+def user_profile():
+    if session and Users.query.filter_by(username=session['username']).first():
+        return render_template('user-profile.j2', user=Users.query.filter_by(username=session['username']).first())
     else:
-        raise NonExistentCharacterError(
-            '{char_name} is not a character in the api')
+        return abort(403, 'Not allowed')
 
 
-def get_houses_and_members():
-    response = requests.get(f'{base_api}/houses')
+def get_char_or_house(query):
+    response = Houses.query.filter(Houses.name.like(f'%{query}%')).first()
+    if response:
+        return response
+    response = Characters.query.filter(Characters.name.like(f'%{query}%')).first()
+    if response:
+        return response
+    response = Quotes.query.filter(Quotes.quote_caption.like(f'%{query}%')).first()
+    if response:
+        return response
 
-    if (response.status_code == 200):
-        json_houses = response.json()
-        houses_and_members = {house['slug']: [member['slug']
-                                              for member in house['members']] for house in json_houses}
-
-        return houses_and_members
-
-
-def get_random_character_by_house_name(house_name):
-    response = requests.get(f'{base_api}/house/{house_name}')
-
-    if (response.status_code == 200):
-        json_house = response.json()
-        if len(json_house) >= 1:
-            members = [member['slug'] for member in json_house[0]['members']]
-            character_name = random.choice(members)
-            return character_name
-    return ''
+def delete_favorite_quote(quote_id):
+    quote_to_delete = FavoriteQuotes.query.filter_by(user_id=Users.query.filter_by(username=session['username']).first().id).filter_by(quote_id=quote_id).first()
+    db.session.delete()
 
 
-def get_quote_by_char_or_house(received_text):
-    lower_text = received_text.lower()
-    houses_and_members = get_houses_and_members()
-    is_house = lower_text in houses_and_members
-    if is_house:
-        char_name = get_random_character_by_house_name(lower_text)
-    else:
-        char_name = get_slug_by_name(lower_text)
 
-    quote = get_quote_by_slug(char_name)
-    return quote
-
-
-def get_pictures_json():
-    pictures_json = None
-    response = requests.get(
-        'https://raw.githubusercontent.com/jeffreylancaster/game-of-thrones/master/data/characters.json')
-    if response.status_code == 200 and response.content:
-        pictures_json = response.json()['characters']
-    else:
-        local_json = os.path.join(app.static_folder, 'characters.json')
-        with open(local_json, 'r', encoding='utf-8') as fh:
-            pictures_json = json.load(fh)['characters']
-
-    return pictures_json
-
-
-def get_first_name(full_name):
-    return full_name.lower().split(" ")[0]
-
-
-def get_last_name(full_name):
-    return full_name.lower().split(" ")[-1]
-
-
-def get_char_image_url(pictures_json, full_char_name):
-    char_first_name = get_first_name(full_char_name)
-    char_last_name = get_last_name(full_char_name)
-    for json_char in pictures_json:
-        json_char_first_name = get_first_name(json_char['characterName'])
-        if full_char_name.lower() == json_char['characterName'].lower():
-            return json_char.get('characterImageFull', '')
-        elif char_first_name == json_char_first_name:
-            house_name = json_char.get("houseName", "")
-
-            if isinstance(house_name, str) and f'{char_first_name} {char_last_name}'.lower() == f"{char_first_name} {json_char.get('houseName', '').lower()}":
-                return json_char.get('characterImageFull', '')
-    raise NoAvailableImageFoundError(f"no image matches {full_char_name}")
-
-
-if __name__ == '__main__':
-    app.run(threaded=True, port=5000)
+if __name__ == "__main__":
+    app.run()

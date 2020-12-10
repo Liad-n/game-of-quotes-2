@@ -251,11 +251,11 @@ header {
   text-align: center;
 }
 
-#search-box-title {
+#text-box-title {
   margin-top: 0;
 }
 
-.search-box {
+.text-box {
   height: 45px;
   position: relative;
   background-color: #1f1b24;
@@ -263,7 +263,7 @@ header {
   border-radius: 50px;
 }
 
-.search-box:focus-within {
+.text-box:focus-within {
   border: 2px solid #c38d5f;
 }
 
@@ -341,6 +341,17 @@ footer a {
 body > * :not(:last-child) {
   flex: 1 0 auto;
 }
+.users-manage-box{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.user-box{
+  /* height: 45px; */
+  position: relative;
+  background-color: #1f1b24;
+  border: 1px solid #c38d5f;
+  border-radius: 50px;
+}
 @media screen and (min-width: 1200px) {
   body {
     font-size: 20px;
@@ -389,7 +400,7 @@ body > * :not(:last-child) {
     line-height: 1.6;
     left: 1vmax;
   }
-  .search-box-container {
+  .text-box-container {
     min-width: 20em;
     max-width: 40vw;
     margin: 0 auto;

@@ -1,0 +1,31 @@
+
+      {% extends "layout.j2" %}
+      {% block content %}
+      {% if user %}
+        <div id="random-btn-title" class="instruction-title">
+            Welcome, {{user.full_name}}!
+        </div>
+      {% for quote in user.favorite_quotes %}
+        <div class="users-manage-box">
+        <div class="user-box">
+            <div class="field-item">Character: {{user.full_name}}</div>
+            <div class="field-item">Quote: {{user.username}}</div>
+            <div class="field-item">Is Admin: {{user.access_level}}</div>
+        </div>
+        </div>
+      {% endfor %}
+      {% endif %}
+     
+    </main>
+    {% if quote %}
+    <div class="quote-box">
+      {% if img_url %}
+      <img src="{{ img_url }}" alt="{{ char_name }}" />
+      {% endif %}
+      <div class="quote-and-name">
+        <blockquote class="quote">{{quote}}</blockquote>
+        <div class="author-name">{{char_name}}</div>
+      </div>
+    </div>
+    {% endif %}
+    {% endblock content %}

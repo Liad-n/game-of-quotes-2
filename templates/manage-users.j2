@@ -1,0 +1,28 @@
+
+      {% extends "layout.j2" %}
+      {% block content %}
+      {% if is_admin %}
+      {% for user in users %}
+        <div class="users-manage-box">
+        <div class="user-box">
+            <div class="field-item">Name: {{user.full_name}}</div>
+            <div class="field-item">Username: {{user.username}}</div>
+            <div class="field-item">Is Admin: {{user.access_level}}</div>
+        </div>
+        </div>
+      {% endfor %}
+      {% endif %}
+     
+    </main>
+    {% if quote %}
+    <div class="quote-box">
+      {% if img_url %}
+      <img src="{{ img_url }}" alt="{{ char_name }}" />
+      {% endif %}
+      <div class="quote-and-name">
+        <blockquote class="quote">{{quote}}</blockquote>
+        <div class="author-name">{{char_name}}</div>
+      </div>
+    </div>
+    {% endif %}
+    {% endblock content %}

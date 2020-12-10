@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Game of Quotes</title>
+    <link
+      href="{{url_for('static',filename='style.css')}}"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      rel="shortcut icon"
+      type="image/jpg"
+      href="{{url_for('static',filename='/icons/game-of-thrones-favicon-16x16.ico')}}"
+    />
+  </head>
+
+  <body>
+    <header>
+      <h1 id="title">Game of Quotes</h1>
+    </header>
+    <main>
+      <div id="text-box-title" class="instruction-title">
+        Winter is coming they said...<br />
+        Better get yourself a quote!
+      </div>
+    {% block content %}
+    {% endblock content %}
+    <footer>
+      Created using the
+      <a href="https://gameofthronesquotes.xyz/">Game of Thrones quotes API</a>
+    </footer>
+  </body>
+</html>
