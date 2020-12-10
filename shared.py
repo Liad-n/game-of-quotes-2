@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gameofquotes14.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.get_environ("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.get.environ("DATABASE_URL")
 app.config['SECRET_KEY'] = os.get.environ("SECRET_KEY")
 # app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
