@@ -1,0 +1,67 @@
+
+      {% extends "layout.j2" %}
+      {% block content %}
+      <div id="form-container">
+        <form action="/admin/add-quote" method="POST">
+         <div class="text-box">
+              <input
+                type="text"
+                id="author_name"
+                name="author_name"
+                aria-label="Author name field"
+                autofocus
+                required
+                placeholder="Author name: "
+                autocomplete="off"
+                pattern="^[A-Za-z ]+$"
+                spellcheck="false"
+                title="English alphabets and spaces only."
+              />
+              
+            </div>
+          <div class="quote_caption">
+            <div class="text-box">
+              <input
+                type="text"
+                id="quote_caption"
+                name="quote_caption"
+                aria-label="Quote caption field"
+                autofocus
+                required
+                placeholder="Quote caption: "
+                autocomplete="off"
+                pattern="^[A-Za-z0-9 !]+$"
+                spellcheck="false"
+                title="English alphabets and spaces only."
+              />
+
+            </div>
+          </div>
+          <div class="added_by">
+            <div class="text-box">
+              <input
+                type="added_by"
+                id="added_by"
+                name="added_by"
+                aria-label="Password field"
+                autofocus
+                placeholder="Added by: "
+                autocomplete="off"
+                pattern="^[A-Za-z0-9_]+$"
+                spellcheck="false"
+                title="English alphabets and numbers only."
+              />
+
+            </div>
+          </div>
+          <div class="random-btn-container">
+        <button id="random-btn" type="submit">
+          Add it!
+        </button>
+      </div>
+        </form>
+      </div>
+      
+    </main>
+    {% endblock content %}
+

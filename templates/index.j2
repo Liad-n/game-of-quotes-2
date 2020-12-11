@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{# <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -24,7 +24,9 @@
       <div id="text-box-title" class="instruction-title">
         Winter is coming they said...<br />
         Better get yourself a quote!
-      </div>
+      </div>#} 
+      {% extends 'layout.j2' %} 
+      {% block content %}
       <div id="form-container">
         <form action="/" method="GET">
           <div class="text-box-container">
@@ -63,19 +65,23 @@
       </div>
     </main>
     {% if quote %}
-    <div class="quote-box">
-      {% if img_url %}
-      <img src="{{ img_url }}" alt="{{ char_name }}" />
-      {% endif %}
-      <div class="quote-and-name">
-        <blockquote class="quote">{{quote}}</blockquote>
-        <div class="author-name">{{char_name}}</div>
-      </div>
-    </div>
-    {% endif %}
-    <footer>
+      {# <form class="like-quote-form" action='/' method="POST"> #}
+        <div class="quote-box">
+          {% if img_url %}
+            <img src="{{ img_url }}" alt="{{ char_name }}" />
+          {% endif %}
+          <div class="quote-and-name">
+            <blockquote class="quote">{{quote}}</blockquote>
+            <div class="author-name">{{char_name}}</div>
+          </div>
+        </div>
+        {# <button name="like" type="button" onclick={{url_for(add_favorite_quote)}}>LIKE THIS QUOTE</button> #}
+       {# </form> #}
+    {% endif %} 
+    {% endblock content %}
+    {#<footer>
       Created using the
       <a href="https://gameofthronesquotes.xyz/">Game of Thrones quotes API</a>
     </footer>
   </body>
-</html>
+</html>#}

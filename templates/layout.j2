@@ -29,7 +29,7 @@
     {% endblock content %}
     <footer>
       Created using the
-      <a href="https://gameofthronesquotes.xyz/">Game of Thrones quotes API</a>
+      <a href="https://gameofthronesquotes.xyz/">Game of Thrones quotes API</a> {% if not session %}<a href="{{url_for('login')}}">Login</a>{% else %}<a href="{{url_for('register')}}">Register</a>{% endif %}
     </footer>
   </body>
 </html>
