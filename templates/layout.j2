@@ -18,18 +18,32 @@
 
   <body>
     <header>
-      <h1 id="title">Game of Quotes</h1>
+      <h1 id="title" onclick="location.href='/'">Game of Quotes</h1>
     </header>
     <main>
-      <div id="text-box-title" class="instruction-title">
-        Winter is coming they said...<br />
-        Better get yourself a quote!
-      </div>
+    {% with messages =  get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for message in messages %}
+          {{message[1]}}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
     {% block content %}
     {% endblock content %}
     <footer>
       Created using the
-      <a href="https://gameofthronesquotes.xyz/">Game of Thrones quotes API</a> {% if not session %}<a href="{{url_for('login')}}">Login</a>{% else %}<a href="{{url_for('register')}}">Register</a>{% endif %}
+      <a href="https://gameofthronesquotes.xyz/">Game of Thrones quotes API</a> 
+      {% if not current_user.is_authenticated %}
+      <a href="{{url_for('login')}}">Login</a>  
+      <a href="{{url_for('register')}}">Register</a>  
+      {% else %}
+      <a href="{{url_for('logout')}}">Logout {{current_user.username}}</a>  
+      <a href="{{url_for('user_profile')}}">Profile/Favorites</a>  
+      {% endif %}
+      {% if current_user.access_level == 1 %}  
+      <a href="{{url_for('admin_manage_users')}}">Users</a>  
+      <a href="{{url_for('admin_add_quote')}}">Add A Quote</a>
+      {% endif %}
     </footer>
   </body>
 </html>

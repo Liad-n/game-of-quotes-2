@@ -55,22 +55,10 @@
       </div>
         </form>
       </div>      
-    </main>
-    {% if session %}
+    {% if current_user.is_authenticated %}
         <div id="random-btn-title" class="instruction-title">
-        Signed in successfully!
-        Welcome, {{ username }}!
+        Welcome, {{ current_user.username }}!
       </div>
-    {% endif %}
-    {% if quote %}
-    <div class="quote-box">
-      {% if img_url %}
-      <img src="{{ img_url }}" alt="{{ char_name }}" />
-      {% endif %}
-      <div class="quote-and-name">
-        <blockquote class="quote">{{quote}}</blockquote>
-        <div class="author-name">{{char_name}}</div>
-      </div>
-    </div>
+    </main>
     {% endif %}
     {% endblock content %}

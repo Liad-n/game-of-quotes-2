@@ -154,6 +154,7 @@ textarea {
 h1#title {
   font-family: "Game of Thrones", sans-serif;
   font-weight: 400;
+  word-spacing: 0.11rem;
   text-shadow: 1px 2px 4px #bf7f00, -1px -2px 5px #bf7f00;
 }
 
@@ -290,7 +291,23 @@ header {
   font-size: 1em;
   letter-spacing: 0.1rem;
 }
-
+.like-btn{
+  width: 10vw;
+  padding: 3px 10px 6px 10px;
+  border-radius: 8px;
+  /* border: none; */
+  outline:none;
+  border: 1px solid #c38d5f;
+  background: #121212;
+  font-size: 1.4em;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fcfef0;
+}
+.like-btn:active,
+.like-btn:hover{
+  background: #272625;
+}
 #random-btn {
   padding: 3px 10px 6px 10px;
   border-radius: 8px;
@@ -338,19 +355,26 @@ footer a {
   color: #a77b55;
 }
 
+footer a:hover,
+footer a:active {
+  color: #c08f64;
+}
+
 body > * :not(:last-child) {
   flex: 1 0 auto;
 }
 .users-manage-box{
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 10px;
 }
 .user-box{
   /* height: 45px; */
+  padding: 10px;
   position: relative;
   background-color: #1f1b24;
   border: 1px solid #c38d5f;
-  border-radius: 50px;
+  border-radius: 20px;
 }
 @media screen and (min-width: 1200px) {
   body {
@@ -361,6 +385,7 @@ body > * :not(:last-child) {
   }
   h1#title {
     font-size: 2.8em;
+    cursor: pointer;
   }
   main {
     padding: 10px;

@@ -6,10 +6,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
-if os.path.exists("app.config"):
+if os.path.exists("config.py"):
     app.config.from_pyfile('config.py')
 
 db = SQLAlchemy(app)

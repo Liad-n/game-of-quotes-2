@@ -5,27 +5,21 @@
         <div id="random-btn-title" class="instruction-title">
             Welcome, {{user.full_name}}!
         </div>
-      {% for quote in user.favorite_quotes %}
+       <h3>Favorite Quotes</h3> 
+      {% for quote in favorite_quotes %}
         <div class="users-manage-box">
         <div class="user-box">
-            <div class="field-item">Character: {{user.full_name}}</div>
-            <div class="field-item">Quote: {{user.username}}</div>
-            <div class="field-item">Is Admin: {{user.access_level}}</div>
+            <div class="field-item">Character: {{quote[3]}}</div>
+            <div class="field-item">Quote: {{quote[2]}}</div>
         </div>
         </div>
       {% endfor %}
       {% endif %}
-     
-    </main>
-    {% if quote %}
-    <div class="quote-box">
-      {% if img_url %}
-      <img src="{{ img_url }}" alt="{{ char_name }}" />
-      {% endif %}
-      <div class="quote-and-name">
-        <blockquote class="quote">{{quote}}</blockquote>
-        <div class="author-name">{{char_name}}</div>
-      </div>
-    </div>
-    {% endif %}
+        <div class="random-btn-container">
+            <button id="random-btn" type="button" onclick="location.href='/'">
+                Back to quote search.
+                {# <i class="solid-dice-icon"></i> #}
+            </button>
+        </div> 
+    </main>    
     {% endblock content %}

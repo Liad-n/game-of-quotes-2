@@ -4,7 +4,7 @@ import os
 import requests
 from sqlalchemy.inspection import inspect
 
-from models import Characters, FavoriteQuotes, Houses, Quotes, Users
+from models import AccessLevel, Character, FavoriteQuote, House, Quote, User
 from shared import app, db
 
 
@@ -60,7 +60,7 @@ def get_chars_with_pics(chars, pictures_json):
 
 
 def get_house_ids():
-    houses = Houses.query.all()
+    houses = House.query.all()
     return {house.name: house.id for house in houses}
 
 
@@ -90,22 +90,27 @@ def get_all_table_columns(model):
 def occupy_houses():
     houses = get_houses()
     for house in houses:
-        new_house = Houses(name=house)
+        new_house = House(name=house)
         db.session.add(new_house)
     db.session.commit()
 
 
 def get_chars_from_table():
-    chars = Characters.query.all()
+    chars = Character.query.all()
     return chars
 
 
 def occupy_quotes(chars_raw):
     for char in chars_raw:
-        char_id = Characters.query.filter_by(name=char['name']).first().id
+        char_id = Character.query.filter_by(name=char['name']).first().id
         for quote in char['quotes']:
-            new_quote = Quotes(quote_caption=quote, author_id=char_id)
+            new_quote = Quote(quote_caption=quote, author_id=char_id)
             db.session.add(new_quote)
+    db.session.commit()
+
+
+def occupy_access_levels(access_levels_map):
+    db.session.bulk_insert_mappings(AccessLevel, access_levels_map)
     db.session.commit()
 
 
@@ -123,9 +128,14 @@ chars_with_pics = get_chars_with_pics(chars, pictures_json)
 
 chars_raw = get_chars_with_pics_and_house_ids(chars_with_pics, house_lut)
 
-chars_cols = get_all_table_columns(Characters)
+chars_cols = get_all_table_columns(Character)
 chars_for_table = get_chars_for_table(chars_raw, chars_cols)
-db.session.bulk_insert_mappings(Characters, chars_for_table)
+db.session.bulk_insert_mappings(Character, chars_for_table)
 db.session.commit()
 
 occupy_quotes(chars_raw)
+
+access_level_values = [{'id': 0, 'name': 'User'},
+                        {'id': 1, 'name': 'Admin'}]
+
+occupy_access_levels(access_level_values)

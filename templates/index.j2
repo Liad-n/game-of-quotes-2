@@ -20,13 +20,13 @@
     <header>
       <h1 id="title">Game of Quotes</h1>
     </header>
-    <main>
+    <main>#} 
+      {% extends 'layout.j2' %} 
+      {% block content %}
       <div id="text-box-title" class="instruction-title">
         Winter is coming they said...<br />
         Better get yourself a quote!
-      </div>#} 
-      {% extends 'layout.j2' %} 
-      {% block content %}
+      </div>
       <div id="form-container">
         <form action="/" method="GET">
           <div class="text-box-container">
@@ -65,7 +65,6 @@
       </div>
     </main>
     {% if quote %}
-      {# <form class="like-quote-form" action='/' method="POST"> #}
         <div class="quote-box">
           {% if img_url %}
             <img src="{{ img_url }}" alt="{{ char_name }}" />
@@ -75,13 +74,44 @@
             <div class="author-name">{{char_name}}</div>
           </div>
         </div>
-        {# <button name="like" type="button" onclick={{url_for(add_favorite_quote)}}>LIKE THIS QUOTE</button> #}
-       {# </form> #}
-    {% endif %} 
+      <div id="id_field" hidden>{{quote_obj.id}}</div>
+
+        {% if current_user.favorite_quotes | selectattr("quote_id", "equalto", quote_obj.id) | list | length < 1 %}
+          <button class="like-btn" name="like" type="button" onclick="add_favorite_quote('add');">LIKE</button> 
+        {% else %}
+          <button name="like-btn" type="button" onclick="add_favorite_quote('remove');">UNLIKE</button> 
+        {% endif %}
+      
+    {% endif %}
+    {% block script %}
+    <script>
+      function add_favorite_quote(action){
+        var quote_id = document.getElementById("id_field").textContent;
+        var entry = {
+          quote: quote_id
+        };
+        
+          fetch(`${window.origin}/add-favorite-quote/${action}`, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(entry),
+            cache: 'no-cache',
+            headers: new Headers({
+              'content-type': 'application/json'
+            })
+        })
+        .then(function (response){
+          if (response.status !== 200) {
+            alert("You already clicked this button :)")
+            console.log(`Response status is not 200: ${response.status}`)
+            return;
+          }
+          response.json().then(function (data){
+            console.log(data, 'quote_id')
+          })
+        })
+      }
+      </script>
+    {% endblock script %} 
     {% endblock content %}
-    {#<footer>
-      Created using the
-      <a href="https://gameofthronesquotes.xyz/">Game of Thrones quotes API</a>
-    </footer>
-  </body>
-</html>#}
+
