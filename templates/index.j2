@@ -1,26 +1,4 @@
-{# <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Game of Quotes</title>
-    <link
-      href="{{url_for('static',filename='style.css')}}"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link
-      rel="shortcut icon"
-      type="image/jpg"
-      href="{{url_for('static',filename='/icons/game-of-thrones-favicon-16x16.ico')}}"
-    />
-  </head>
 
-  <body>
-    <header>
-      <h1 id="title">Game of Quotes</h1>
-    </header>
-    <main>#} 
       {% extends 'layout.j2' %} 
       {% block content %}
       <div id="text-box-title" class="instruction-title">
@@ -74,13 +52,15 @@
             <div class="author-name">{{char_name}}</div>
           </div>
         </div>
-      <div id="id_field" hidden>{{quote_obj.id}}</div>
-
-        {% if current_user.favorite_quotes | selectattr("quote_id", "equalto", quote_obj.id) | list | length < 1 %}
-          <button class="like-btn" name="like" type="button" onclick="add_favorite_quote('add');">LIKE</button> 
-        {% else %}
-          <button name="like-btn" type="button" onclick="add_favorite_quote('remove');">UNLIKE</button> 
+        {% if current_user.is_authenticated %}
+          {% if current_user.favorite_quotes | selectattr("quote_id", "equalto", quote_obj.id) | list | length < 1 %}
+            <button class="like-btn" name="like" type="button" onclick="add_favorite_quote('add');">LIKE</button> 
+          {% else %}
+            <button name="like-btn" type="button" onclick="add_favorite_quote('remove');">UNLIKE</button> 
+          {% endif %}
+          <div id="id_field" hidden>{{quote_obj.id}}</div>
         {% endif %}
+
       
     {% endif %}
     {% block script %}

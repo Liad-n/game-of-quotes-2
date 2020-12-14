@@ -303,6 +303,7 @@ header {
   font-weight: 600;
   cursor: pointer;
   color: #fcfef0;
+  align-self: center;
 }
 .like-btn:active,
 .like-btn:hover{

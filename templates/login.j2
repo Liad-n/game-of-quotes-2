@@ -3,7 +3,7 @@
       {% block content %}
       <div id="form-container">
         <form action="/login" method="POST">
-          <div class="username">
+          <div class="text-box-container">
             <div class="text-box">
               <input
                 type="text"
@@ -25,7 +25,7 @@
               </button> #}
             </div>
           </div>
-          <div class="password">
+          <div class="text-box-container">
             <div class="text-box">
               <input
                 type="password"
@@ -59,6 +59,6 @@
         <div id="random-btn-title" class="instruction-title">
         Welcome, {{ current_user.username }}!
       </div>
-    </main>
     {% endif %}
+    </main>
     {% endblock content %}
