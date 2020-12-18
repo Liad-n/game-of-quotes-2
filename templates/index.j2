@@ -53,20 +53,33 @@
           </div>
         </div>
         {% if current_user.is_authenticated %}
-          {% if current_user.favorite_quotes | selectattr("quote_id", "equalto", quote_obj.id) | list | length < 1 %}
-            <button class="like-btn" name="like" type="button" onclick="add_favorite_quote('add');">LIKE</button> 
+          {# {% if current_user.favorite_quotes | selectattr("quote_id", "equalto", quote_obj.id) | list | length < 1 %}
+            <button id="like-btn" class="like-btn" name="like" type="button" onclick="add_favorite_quote('add');">LIKE</button> 
           {% else %}
             <button name="like-btn" type="button" onclick="add_favorite_quote('remove');">UNLIKE</button> 
-          {% endif %}
+          {% endif %} #}
+          <button id="like-btn" class="like-btn" name="like" type="button" onclick="add_favorite_quote();">LIKE</button> 
           <div id="id_field" hidden>{{quote_obj.id}}</div>
         {% endif %}
 
       
     {% endif %}
-    {% block script %}
+    
+  {% block script %}
     <script>
+
+      var action = 'add';
       function add_favorite_quote(action){
+
+        if ({{current_user.access_level | safe}} !== 1) {
+          return;
+        }
+        {# if ({{ quote_obj | safe }} == None){
+          console.log('No quote')
+          return;
+        } #}
         var quote_id = document.getElementById("id_field").textContent;
+        {# var quote_id = {{quote_obj.id | safe}}; #}
         var entry = {
           quote: quote_id
         };
@@ -84,9 +97,11 @@
           if (response.status !== 200) {
             alert("You already clicked this button :)")
             console.log(`Response status is not 200: ${response.status}`)
+            {# document.getElementById("like-btn").textContent = 100; #}
             return;
           }
           response.json().then(function (data){
+            
             console.log(data, 'quote_id')
           })
         })

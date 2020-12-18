@@ -5,6 +5,7 @@ from flask import abort, redirect, render_template, request, url_for, flash, jso
 
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql.functions import user
 
 
 from models import AccessLevel, Character, FavoriteQuote, House, Quote, User
@@ -29,7 +30,7 @@ def load_user(_id):
 def index():
     search_input = request.args.get('search')
     if not search_input:
-        return render_template('index.j2')
+        return render_template('index.j2', quote_obj=None)
     
     response = get_char_or_house(search_input)
     if type(response) == House:
@@ -144,7 +145,12 @@ def logout():
 def admin_manage_users():
     # print(AccessLevel.query.filter_by(id=current_user.access_level).first().name)
     if current_user.is_authenticated and current_user.access_level == 1:
-        return render_template('manage-users.j2', users=User.query.all())
+        users_objects = User.query.all()
+        # for u in users_objects:
+        #     print(u.access_level_name)
+        # for c in Character.query.all():
+        #     print(c.quotes)
+        return render_template('manage-users.j2', users=users_objects)
     else:
         return abort(403, 'Not allowed')
 
@@ -214,6 +220,24 @@ def add_favorite_quote(action):
     return res
 
 
+@app.route('/admin/delete-user/<user_id>', methods=['GET', 'POST'])
+def delete_user(user_id):
+    user_obj = User.query.get(user_id)
+
+    if not user_obj or user_obj.access_level > 0:
+        flash(message=f'Sorry, user could not be deleted.', category='error')
+        return redirect(url_for('admin_manage_users'))
+
+    username_to_delete = user_obj.username
+    if current_user.is_authenticated and current_user.access_level == 1:
+        delete_user_by_id(user_id)
+        flash(message=f'User {username_to_delete} deleted successfully.', category='success')
+
+        return redirect(url_for('admin_manage_users'))
+    else:
+        return abort(403, 'Not allowed')
+
+
 def get_char_or_house(query):
     lower_query = query.lower()
     response = House.query.filter(func.lower(House.name).like(f'%{lower_query}%')).first()
@@ -278,6 +302,17 @@ def delete_favorite_quote(quote_id):
             flash(message='Quote deleted successfully.', category='success')
         else:
             flash(message='Couldn\'t find the selected quote', category='error')
+
+
+def delete_user_by_id(user_id):
+    if current_user.is_authenticated and current_user.access_level == 1:
+        user_to_delete = User.query.get(user_id)
+        if user_to_delete:
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            return True
+    else:
+        return False
 
 
 if __name__ == "__main__":

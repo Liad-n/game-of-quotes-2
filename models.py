@@ -12,6 +12,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.Text, nullable=False)
     access_level = db.Column(db.Integer, db.ForeignKey('access_levels.id'), default=0)
     favorite_quotes = db.relationship('FavoriteQuote', backref='favorite_quotes')
+    access_level_name = db.relationship('AccessLevel', backref='access_levels')
 
 
 class FavoriteQuote(db.Model):
